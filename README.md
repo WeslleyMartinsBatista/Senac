@@ -1,0 +1,1 @@
+Repositorio destinado a conter todas as atividades do senac organizadas por UCs
