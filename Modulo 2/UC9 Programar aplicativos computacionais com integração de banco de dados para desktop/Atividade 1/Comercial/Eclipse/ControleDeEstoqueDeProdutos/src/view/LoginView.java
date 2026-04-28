@@ -1,38 +1,44 @@
 package view;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 public class LoginView {
 	JPanel telaLogin = new JPanel();
-		ImageIcon logo = new ImageIcon("resources/images/logoEstozem.png"); JLabel labelLogo;
-		
-		JPanel cardLogin = new JPanel(); TitledBorder borderLogin; Font borderFonte;
-		
-			JPanel abaUsuario = new JPanel();
-				JLabel labelUsuario = new JLabel("Usuario");
-				JTextField textusuario = new JTextField();
-				
-			JPanel abaSenha = new JPanel();
-				JLabel labelSenha = new JLabel("Senha");
-				JTextField textSenha = new JTextField();
-				
-			JPanel abaEntrar = new JPanel();
-				JButton botaoEntrar = new JButton("Entrar"); 
+		JPanel panelGeral = new JPanel();
+			ImageIcon logo = new ImageIcon("resources/images/logoEstozem.png"); JLabel labelLogo;
+			
+			JPanel cardLogin = new JPanel(); TitledBorder borderLogin; Font borderFonte;
+			
+				JPanel abaUsuario = new JPanel();
+					JLabel labelUsuario = new JLabel("Usuario");
+					JTextField textusuario = new JTextField();
+					
+				JPanel abaSenha = new JPanel();
+					JLabel labelSenha = new JLabel("Senha");
+					JTextField textSenha = new JTextField();
+					
+				JPanel abaEntrar = new JPanel();
+					JButton botaoEntrar = new JButton("Entrar"); 
 		
 	public LoginView() {
 		
 	}
+	
 	private void gerenciarComponentes() {
 		// - ABA USUARIO
 		labelUsuario.setFont(new Font("Arial", Font.BOLD, 18));
@@ -71,8 +77,11 @@ public class LoginView {
 	private void gerenciarLogin() {
 		gerenciarComponentes();
 		
-		// LOGO
-		//labelLogo = new JLabel(logo);
+		// - LOGO
+		
+		labelLogo = new JLabel(getCircularIcon(logo, 120));
+		
+		/*
 		Image img = logo.getImage();
 		
 		int largura = 100;
@@ -83,6 +92,7 @@ public class LoginView {
 		ImageIcon iconRedimensionado = new ImageIcon(imgRedimensionada);
 		
 		labelLogo = new JLabel(iconRedimensionado);
+		*/
 		
 		// CARD LOGIN
 		cardLogin.setPreferredSize(new Dimension(500, 500));
@@ -108,10 +118,16 @@ public class LoginView {
 		cardLogin.add(abaSenha);
 		cardLogin.add(abaEntrar);
 		
+		// PAINEL GERAL
+		panelGeral.setLayout(new BoxLayout(panelGeral, BoxLayout.Y_AXIS));
+		panelGeral.add(labelLogo);
+		panelGeral.add(cardLogin);
+		
 		// TELA
 		telaLogin.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
+		/*
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		
@@ -121,11 +137,32 @@ public class LoginView {
 		gbc.gridy = 1;
 		
 		telaLogin.add(cardLogin, gbc);
+		*/
+		telaLogin.add(panelGeral);
 	}
 	
 	public JPanel setTelaLogin() {
 		gerenciarLogin();
 		//return cardLogin;
 		return telaLogin;
+	}
+	
+	public ImageIcon getCircularIcon(ImageIcon icon, int size) {
+	    // Cria uma imagem transparente
+	    BufferedImage output = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+	    Graphics2D g2 = output.createGraphics();
+
+	    // Melhora a qualidade das bordas (Antialiasing)
+	    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+	    // Desenha o círculo que servirá de máscara
+	    g2.fillOval(0, 0, size, size);
+
+	    // Define que a próxima imagem só deve aparecer dentro do círculo desenhado
+	    g2.setComposite(AlphaComposite.SrcIn);
+	    g2.drawImage(icon.getImage(), 0, 0, size, size, null);
+
+	    g2.dispose();
+	    return new ImageIcon(output);
 	}
 }
